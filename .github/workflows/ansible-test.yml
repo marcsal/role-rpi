@@ -1,0 +1,27 @@
+name: Ansible Lint & Syntax Check
+
+on:
+  push:
+    branches: [ "master", "main" ]
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+        
+    - name: Install Ansible
+      run: pip install ansible
+      
+    - name: Set up ansible.cfg
+      run: printf '[defaults]\nroles_path=../\n' > ansible.cfg
+
+    - name: Run Syntax Check
+      run: ansible-playbook tests/test.yml -i tests/inventory --syntax-check
